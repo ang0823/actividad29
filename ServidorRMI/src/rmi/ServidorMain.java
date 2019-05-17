@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -26,17 +30,39 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
 
     private static JTextField usuariosConectados;
     private static JTextField porcentajeT;
+
     private int porcentajeGuardado = 0;
 
     private final List<IClient> clientes;
     private final List<Image> imagenes;
+    private final List<Imagen> imagen;
+    
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public ServidorMain() throws RemoteException {
         super();
-
+        
+        inicializarJpa();
+        
         clientes = new ArrayList<>();
         imagenes = new ArrayList<>();
+        imagen = new ArrayList<>();
 
+        try {
+            List<Imagen> listaImagenes = obtenerImagenes();
+            for (int i = 0; i < listaImagenes.size(); i++) {
+                imagen.add((Imagen) listaImagenes.get(i));
+                System.out.println("USUARIO NO. " + i);
+                System.out.println("ID : " + listaImagenes.get(i).getId());
+                System.out.println("Nombre : " + listaImagenes.get(i).getNombre());
+                System.out.println("URL : " + listaImagenes.get(i).getUrl());
+                System.out.println("idCliente : " + listaImagenes.get(i).getIdCliente());
+            }
+        } catch (Exception ex) {
+            System.out.println("Error en consulta JPA: " + ex);
+        }
+        
         imagenes.add(new Image("Imagen1", "https://image.flaticon.com/icons/png/512/381/381572.png"));
         imagenes.add(new Image("Imagen2", "https://image.flaticon.com/icons/png/512/90/90603.png"));
         imagenes.add(new Image("Imagen3", "https://image.flaticon.com/icons/png/512/802/802192.png"));
@@ -101,6 +127,20 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
         frame.add(porcentajeT);
 
         frame.setVisible(true);
+    }
+    
+    private List<Imagen> obtenerImagenes() {
+        String query = "Imagen.findAll";
+        Query q = em.createNativeQuery(query);
+        List<Imagen> listaImagenes = q.getResultList();
+        return listaImagenes;
+    }
+    
+    private void inicializarJpa() {
+        emf = Persistence.createEntityManagerFactory("ServidorRMIPU");
+        em = emf.createEntityManager();
+
+        em.getTransaction().begin();
     }
 
     /**
