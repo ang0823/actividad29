@@ -34,8 +34,8 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
     private int porcentajeGuardado = 0;
 
     private final List<IClient> clientes;
-    private final List<Image> imagenes;
-    private final List<Imagen> imagen;
+    private final List<Image> imagen;
+    private final List<Imagen> listaImagenes;
     
     private EntityManagerFactory emf;
     private EntityManager em;
@@ -46,24 +46,19 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
         inicializarJpa();
         
         clientes = new ArrayList<>();
-        imagenes = new ArrayList<>();
         imagen = new ArrayList<>();
+        listaImagenes = obtenerImagenes();
 
         try {
-            List<Imagen> listaImagenes = obtenerImagenes();
+            //listaImagenes = obtenerImagenes();
             for (int i = 0; i < listaImagenes.size(); i++) {
-                imagen.add((Imagen) listaImagenes.get(i));
-                System.out.println("USUARIO NO. " + i);
-                System.out.println("ID : " + listaImagenes.get(i).getId());
-                System.out.println("Nombre : " + listaImagenes.get(i).getNombre());
-                System.out.println("URL : " + listaImagenes.get(i).getUrl());
-                System.out.println("idCliente : " + listaImagenes.get(i).getIdCliente());
+                imagen.add(new Image(listaImagenes.get(i).getNombre(), listaImagenes.get(i).getUrl()));
             }
         } catch (Exception ex) {
             System.out.println("Error en consulta JPA: " + ex);
         }
         
-        imagenes.add(new Image("Imagen1", "https://image.flaticon.com/icons/png/512/381/381572.png"));
+        /**imagenes.add(new Image("Imagen1", "https://image.flaticon.com/icons/png/512/381/381572.png"));
         imagenes.add(new Image("Imagen2", "https://image.flaticon.com/icons/png/512/90/90603.png"));
         imagenes.add(new Image("Imagen3", "https://image.flaticon.com/icons/png/512/802/802192.png"));
         imagenes.add(new Image("Imagen4", "https://image.flaticon.com/icons/png/512/644/644617.png"));
@@ -72,7 +67,7 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
         imagenes.add(new Image("Imagen7", "https://image.flaticon.com/icons/png/512/91/91059.png"));
         imagenes.add(new Image("Imagen8", "https://image.flaticon.com/icons/png/512/105/105283.png"));
         imagenes.add(new Image("Imagen9", "https://i.pinimg.com/originals/59/57/75/595775041933aeb57cee83e4934d006b.png"));
-        imagenes.add(new Image("Imagen10", "https://images.vexels.com/media/users/3/151879/isolated/lists/db10b16cc41213b78786bff651b02a2b-icono-de-maleta-medico.png"));
+        imagenes.add(new Image("Imagen10", "https://images.vexels.com/media/users/3/151879/isolated/lists/db10b16cc41213b78786bff651b02a2b-icono-de-maleta-medico.png"));*/
 
         gui();
         rmi();
@@ -131,9 +126,9 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
     
     private List<Imagen> obtenerImagenes() {
         String query = "Imagen.findAll";
-        Query q = em.createNativeQuery(query);
-        List<Imagen> listaImagenes = q.getResultList();
-        return listaImagenes;
+        Query q = em.createNamedQuery(query);
+        List<Imagen> imagenes = q.getResultList();
+        return imagenes;
     }
     
     private void inicializarJpa() {
@@ -174,7 +169,7 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
 
     private void mandarProcesamiento() throws RemoteException {
         for (IClient cliente : clientes) {
-            cliente.processImages(imagenes);
+            cliente.processImages(imagen);
         }
 
     }
