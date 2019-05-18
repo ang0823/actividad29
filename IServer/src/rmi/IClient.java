@@ -15,5 +15,5 @@ public interface IClient extends Remote {
      * @param images La imagen en parámetro.
      * @throws RemoteException  Exception causada por RMI.
      */
-    public void processImages(List<Image> images) throws RemoteException;
+    public void processImages(Image image) throws RemoteException;
 }

@@ -15,11 +15,11 @@ public class CallBackClient extends UnicastRemoteObject implements IClient {
     }
 
     @Override
-    public void processImages(List<Image> images) throws RemoteException {
+    public void processImages(Image image) throws RemoteException {
         int i = 1;
-        for (Image img : images) {
-            new Thread(new FrameImage(img, i++)).start();
-        }
+        
+            new Thread(new FrameImage(image)).start();
+        
     }
     
 }

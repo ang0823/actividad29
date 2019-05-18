@@ -95,6 +95,7 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
         usuariosConectados.setText("");
         usuariosConectados.setLayout(null);
         usuariosConectados.setBounds(50, 50, 170, 25);
+        usuariosConectados.setEditable(false);
         
         porcentajeT = new JTextField();
         porcentajeT.setText("");
@@ -108,11 +109,15 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
         iniciar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+              if (clientes.isEmpty()) {
+                usuariosConectados.setText("No hay usuarios conectados.");
+              } else {
                 try {
                     mandarProcesamiento();
                 } catch (RemoteException ex) {
                     Logger.getLogger(ServidorMain.class.getName()).log(Level.SEVERE, null, ex);
                 }
+              }
 
             }
         });
@@ -168,15 +173,20 @@ public class ServidorMain extends UnicastRemoteObject implements IServer {
     }
 
     private void mandarProcesamiento() throws RemoteException {
-        for (IClient cliente : clientes) {
-            cliente.processImages(imagen);
+      int indice = 0;
+      for(int i = 0; i < imagen.size(); i++){
+        for (int j = 0; j < clientes.size(); j++) {
+          clientes.get(j).processImages(imagen.get(indice));
+          indice++;
         }
+      }
 
     }
 
     @Override
     public void desregistrarForCallBack(IClient cliente) throws RemoteException {
         clientes.remove(cliente);
+        usuariosConectados.setText("Clientes : " + clientes.size());
     }
 
     @Override

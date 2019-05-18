@@ -5,9 +5,9 @@
     <class>rmi.Imagen</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/Imagen"/>
-      <property name="javax.persistence.jdbc.user" value="Luis"/>
+      <property name="javax.persistence.jdbc.user" value="TCS2019"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-      <property name="javax.persistence.jdbc.password" value="Luis"/>
+      <property name="javax.persistence.jdbc.password" value="tech2019"/>
     </properties>
   </persistence-unit>
 </persistence>

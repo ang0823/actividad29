@@ -20,11 +20,11 @@ import javax.swing.JLabel;
 public class FrameImage extends JInternalFrame implements Runnable {
 
     private Image imagen;
-    private int windowsNumber;
+    private int windowsNumber = 1;
     
-    public FrameImage(Image imagen, int windowsNumber) {
+    public FrameImage(Image imagen) {
         this.imagen = imagen;
-        this.windowsNumber = windowsNumber;
+        this.windowsNumber = windowsNumber + 1;
     }
     
     @Override
